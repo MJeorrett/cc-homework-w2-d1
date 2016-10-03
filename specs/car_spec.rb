@@ -25,35 +25,14 @@ class CarTest < MiniTest::Test
     assert_equal(0, @car1.speed)
   end
 
-  def test_accelerate()
-    @car1.accelerate
-    expected_speed = Car::ACCELERATE_SPEED_INCREASE
-    expected_fuel = Car::MAX_FUEL - Car::ACCELERATE_FUEL_USAGE
-    assert_equal(expected_speed, @car1.speed)
-    assert_equal(expected_fuel, @car1.fuel_level)
-  end
-
-  def test_accelerate_beyond_top_speed()
-    #accelerate till we are less than one more acceleration away from top speed.
-    until @car1.speed + Car::ACCELERATE_SPEED_INCREASE > Car::MAX_SPEED
-      @car1.accelerate
-    end
-
-    @car1.accelerate
-
-    assert_equal("Already at max speed!", @car1.accelerate)
-
-    assert_equal(Car::MAX_SPEED, @car1.speed)
-  end
-
-  def test_run_out_of_fuel()
-    number_of_accelerations = (Car::MAX_FUEL / Car::ACCELERATE_FUEL_USAGE).floor
-    number_of_accelerations.times do
-      @car1.accelerate
-    end
-
-    assert_equal("Not enough fuel to accelerate again!", @car1.accelerate)
-  end
+  # def test_run_out_of_fuel()
+  #   number_of_accelerations = (Car::MAX_FUEL / Car::ACCELERATE_FUEL_USAGE).floor
+  #   number_of_accelerations.times do
+  #     @car1.accelerate
+  #   end
+  #
+  #   assert_equal("Not enough fuel to accelerate again!", @car1.accelerate)
+  # end
 
   def test_refuel()
     while @car1.fuel_level >= Car::ACCELERATE_FUEL_USAGE
