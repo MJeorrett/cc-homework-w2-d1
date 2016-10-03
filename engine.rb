@@ -14,18 +14,12 @@ class Engine
 
   def accelerate(current_speed)
 
-    if current_speed == @max_speed
-      return "Already at max speed!"
-    elsif @max_speed - current_speed <= @acceleration
+    if @max_speed - current_speed <= @acceleration
       return @max_speed
     else
       return current_speed + @acceleration
     end
 
-  end
-
-  def reduce_speed(speed_decrease)
-    @speed -= speed_decrease
   end
 
 end

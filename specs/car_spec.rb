@@ -6,85 +6,94 @@ require('pry-byebug')
 class CarTest < MiniTest::Test
 
   def setup()
-    @engine1_acceleration_speed_increase = 10
-    @engine1_acceleration_fuel_usage = 5
+    @engine1_acceleration = 10
+    @engine1_fuel_usage = 5
     @engine1_max_speed = 151
 
     @engine1 = Engine.new(
-      @engine1_acceleration_speed_increase,
-      @engine1_acceleration_fuel_usage,
+      @engine1_acceleration,
+      @engine1_fuel_usage,
       @engine1_max_speed
     )
+
     @car1_make = "Honda"
     @car1_model = "Accord"
-    @car1 = Car.new(@car1_make, @car1_model, @engine1)
+    @car1_brake_power = 9
+    @car1_max_fuel = 100
+    @car1 = Car.new(@car1_make, @car1_model, @engine1, @car1_brake_power, @car1_max_fuel)
   end
 
   def test_make()
-    assert_equal("Honda", @car1.make)
+    assert_equal(@car1_make, @car1.make)
   end
 
   def test_model()
-    assert_equal("Accord", @car1.model)
+    assert_equal(@car1_model, @car1.model)
   end
 
-  def test_initialized_fuel_level()
+  def test_brake_power()
+    assert_equal(@car1_brake_power, @car1.brake_power)
+  end
+
+  def test_max_fuel()
+    assert_equal(@car1_max_fuel, @car1.max_fuel)
+  end
+
+  def test_initial_fuel_level()
     assert_equal(100, @car1.fuel_level)
   end
 
-  def test_initialized_speed()
+  def test_initial_speed()
     assert_equal(0, @car1.speed)
   end
 
   def test_run_out_of_fuel()
-    number_of_accelerations = (Car::MAX_FUEL / Engine::ACCELERATE_FUEL_USAGE).floor
+    number_of_accelerations = (@car1_max_fuel / @engine1_fuel_usage).floor
     number_of_accelerations.times do
       @car1.accelerate
     end
 
-    assert_equal("Not enough fuel to accelerate again!", @car1.accelerate)
+    assert_equal(Car::RUN_OUT_OF_FUEL_MESSAGE, @car1.accelerate)
   end
 
   def test_accelerate()
     @car1.accelerate
-    expected_speed = Engine::ACCELERATE_SPEED_INCREASE
-    expected_fuel = Car::MAX_FUEL - Engine::ACCELERATE_FUEL_USAGE
+    expected_speed = @engine1_acceleration
+    expected_fuel = @car1_max_fuel - @engine1_fuel_usage
     assert_equal(expected_speed, @car1.speed)
     assert_equal(expected_fuel, @car1.fuel_level)
   end
 
-  def test_accelerate_beyond_top_speed()
+  def test_accelerate_through_max_speed()
     #accelerate till we are less than one more acceleration away from top speed.
-    until @car1.speed + Engine::ACCELERATE_SPEED_INCREASE > Engine::MAX_SPEED
-      @car1.accelerate
+    until @car1.speed >= @engine1_max_speed
+      @car1.accelerate()
     end
 
-    @car1.accelerate
+    @car1.accelerate()
 
-    assert_equal("Already at max speed!", @car1.accelerate)
-
-    assert_equal(Engine::MAX_SPEED, @car1.speed)
+    assert_equal(@engine1_max_speed, @car1.speed)
   end
 
   def test_refuel()
-    while @car1.fuel_level >= Engine::ACCELERATE_FUEL_USAGE
+    while @car1.fuel_level >= @engine1_fuel_usage
       @car1.accelerate
     end
     @car1.refuel
-    assert_equal(Car::MAX_FUEL, @car1.fuel_level)
+    assert_equal(@car1_max_fuel, @car1.fuel_level)
   end
 
   def test_dont_brake_below_zero()
     @car1.brake
     assert_equal(0, @car1.speed)
-    assert_equal(Car::MAX_FUEL, @car1.fuel_level)
+    assert_equal(@car1_max_fuel, @car1.fuel_level)
   end
 
   def test_brake_when_moving()
     @car1.accelerate
     @car1.accelerate
     @car1.brake
-    expected_speed = (Engine::ACCELERATE_SPEED_INCREASE * 2) - Car::BRAKE_SPEED_DECREASE
+    expected_speed = (@engine1_acceleration * 2) - @car1_brake_power
     assert_equal(expected_speed, @car1.speed)
   end
 

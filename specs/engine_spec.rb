@@ -42,6 +42,6 @@ class EngineTest < MiniTest::Test
 
   def test_accelerate_from_max_speed()
     actual = @engine1.accelerate(@engine1_max_speed)
-    assert_equal("Already at max speed!", actual)
+    assert_equal(@engine1_max_speed, actual)
   end
 end

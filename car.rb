@@ -3,38 +3,49 @@ require_relative('engine')
 
 class Car
 
-  MAX_FUEL = 100
-  BRAKE_SPEED_DECREASE = 9
+  RUN_OUT_OF_FUEL_MESSAGE = "Out of fuel!"
 
-  attr_reader(:make, :model, :engine, :fuel_level)
+  attr_reader(
+    :make,
+    :model,
+    :engine,
+    :brake_power,
+    :max_fuel,
+    :speed,
+    :fuel_level
+  )
 
-  def initialize(make, model, engine)
+  def initialize(make, model, engine, brake_power, max_fuel)
     @make = make
     @model = model
     @engine = engine
-    @fuel_level = MAX_FUEL
+    @brake_power = brake_power
+    @max_fuel = max_fuel
+    @speed = 0
+    @fuel_level = @max_fuel
   end
 
   def brake()
-    @engine.brake(BRAKE_SPEED_DECREASE)
+    if @speed < @brake_power
+      @speed = 0
+    else
+      @speed -= @brake_power
+    end
   end
 
   def accelerate()
+
     # fuel usage
-    if Engine::ACCELERATE_FUEL_USAGE > @fuel_level
-      return "Not enough fuel to accelerate again!"
+    if @engine.fuel_usage > @fuel_level
+      return RUN_OUT_OF_FUEL_MESSAGE
     else
-      @fuel_level -= Engine::ACCELERATE_FUEL_USAGE
+      @fuel_level -= @engine.fuel_usage
     end
 
-    return engine.accelerate()
+    @speed = @engine.accelerate(@speed)
   end
 
   def refuel()
-    @fuel_level = MAX_FUEL
-  end
-
-  def speed
-    return @engine.speed()
+    @fuel_level = @max_fuel
   end
 end
