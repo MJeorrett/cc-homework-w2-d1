@@ -1,26 +1,43 @@
+require('pry-byebug')
+
 class Car
 
-  STARTING_FUEL = 100
+  MAX_FUEL = 100
+
   ACCELERATE_FUEL_USAGE = 5
+
   ACCELERATE_SPEED_INCREASE = 10
-  BRAKE_SPEED_DECREASE = 10
+
+  BRAKE_SPEED_DECREASE = 9
+
+  MAX_SPEED = 151
 
   attr_reader(:make, :model, :fuel_level, :speed)
 
   def initialize(make, model)
     @make = make
     @model = model
-    @fuel_level = STARTING_FUEL
+    @fuel_level = MAX_FUEL
     @speed = 0
   end
 
   def accelerate()
-    if @fuel_level >= ACCELERATE_FUEL_USAGE
-      @fuel_level -= ACCELERATE_FUEL_USAGE
-      @speed += ACCELERATE_SPEED_INCREASE
+    # reduce fuel
+    if ACCELERATE_FUEL_USAGE > @fuel_level
+      return "Not enough fuel to accelerate again!"
     else
-      return "Out of fuel!"
+      @fuel_level -= ACCELERATE_FUEL_USAGE
     end
+
+    # increase speed
+    if @speed == MAX_SPEED
+      return "Already at max speed!"
+    elsif MAX_SPEED - @speed <= ACCELERATE_SPEED_INCREASE
+      @speed = MAX_SPEED
+    else
+      @speed += ACCELERATE_SPEED_INCREASE
+    end
+
   end
 
   def brake()
@@ -29,5 +46,9 @@ class Car
     else
       @speed = 0
     end
+  end
+
+  def refuel()
+    @fuel_level = MAX_FUEL
   end
 end
