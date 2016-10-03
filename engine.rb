@@ -1,14 +1,14 @@
 class Engine
 
   attr_reader(
-    :acceleration_speed_increase,
-    :acceleration_fuel_usage,
+    :acceleration,
+    :fuel_usage,
     :max_speed
   )
 
-  def initialize(acceleration_speed_increase, acceleration_fuel_usage, max_speed)
-    @acceleration_speed_increase = acceleration_speed_increase
-    @acceleration_fuel_usage = acceleration_fuel_usage
+  def initialize(acceleration, fuel_usage, max_speed)
+    @acceleration = acceleration
+    @fuel_usage = fuel_usage
     @max_speed = max_speed
   end
 
@@ -16,10 +16,10 @@ class Engine
 
     if current_speed == @max_speed
       return "Already at max speed!"
-    elsif @max_speed - current_speed <= @acceleration_speed_increase
+    elsif @max_speed - current_speed <= @acceleration
       return @max_speed
     else
-      return current_speed + @acceleration_speed_increase
+      return current_speed + @acceleration
     end
 
   end
